@@ -20,15 +20,20 @@ export function Post({ author, publishAt, content }) {
         setComments([...comments, newCommentText])
         setNewCommentText('')
     }
-    function handleNewCommentChange(){
+    function handleNewCommentChange() {
+        event.target.setCustomValidity('')
         setNewCommentText(event.target.value)
     }
-    function deleteComment(commentToDelete){
-        const commentsWithoutDeleteOne = comments.filter(comment =>{
+    function handleNewCommentInvalid() {
+        event.target.setCustomValidity('Este campo é obrigatório')
+    }
+    function deleteComment(commentToDelete) {
+        const commentsWithoutDeleteOne = comments.filter(comment => {
             return comment !== commentToDelete
         })
         setComments(commentsWithoutDeleteOne)
     }
+    const isNewCommentEmpty = newCommentText.length === 0
     return (
         <article className={styles.post}>
             <header>
@@ -59,16 +64,16 @@ export function Post({ author, publishAt, content }) {
 
             <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
                 <strong>Deixe seu feedback</strong>
-                <textarea name="comment" placeholder="Deixe seu comentário" value={newCommentText} onChange={handleNewCommentChange} />
+                <textarea name="comment" placeholder="Deixe seu comentário" value={newCommentText} onChange={handleNewCommentChange} onInvalid={handleNewCommentInvalid} required />
                 <footer>
-                    <button type="submit">Públicar</button>
+                    <button type="submit" disabled={isNewCommentEmpty}>Públicar</button>
                 </footer>
             </form>
 
             <div className={styles.commentList}>
                 {
                     comments.map(comment => {
-                        return <Comment key={comment} content={comment} onDeleteComment={deleteComment}/>
+                        return <Comment key={comment} content={comment} onDeleteComment={deleteComment} />
                     })
                 }
             </div>
